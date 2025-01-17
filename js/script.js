@@ -6,7 +6,6 @@ FSJS Project 2 - Data Pagination and Filtering
 // Element selectors
 const studentsContainer = document.querySelector('.student-list');
 const paginationContainer = document.querySelector('.link-list');
-let searchInput;
 
 const studentsPerPage = 9;
 
@@ -14,7 +13,7 @@ const studentsPerPage = 9;
 * `showPage` function
 * This function will create and insert/append the elements needed to display a "page" of nine students
 * @param {Array} list - The array of student objects
-* @param {Int} page - The requested page number
+* @param {Number} page - The requested page number
 ***/
 function showPage(list, page) {
   // Start and end index of list items to be displayed on the page
@@ -101,44 +100,44 @@ function addSearchBar() {
   document.querySelector('.header').insertAdjacentHTML('beforeend', html);
 
   // Add search function when user types in the search bar
-  searchInput = document.querySelector('#search');
+  const searchInput = document.querySelector('#search');
   searchInput.addEventListener('keyup', search);
 
   // Add search function when user clicks the search button
-  document.querySelector('.student-search button').addEventListener('click', search);  
-}
-
-/*** 
- * `search` function
- * The function filters the student data so that only students whose name include the search value are shown.
- * The search is case-insensitive and work for partial matches.
- ***/
-function search() {
-  const matchingData = [];
-  const userInput = searchInput.value.toLowerCase();
-
-  // Find matching data
-  for (let i = 0; i < data.length; i++) {
-    const studentFirstname = data[i].name.first.toLowerCase();
-    const studentLastname = data[i].name.last.toLowerCase();
-
-    if (studentFirstname.includes(userInput) || studentLastname.includes(userInput)) {
-      matchingData.push(data[i])
+  const searchButton = document.querySelector('.student-search button');
+  searchButton.addEventListener('click', search);  
+  
+  /*** 
+   * `search` function
+   * The function filters the student data so that only students whose name include the search value are shown.
+   * The search is case-insensitive and work for partial matches.
+   ***/
+  function search() {
+    const matchingData = [];
+    const userInput = searchInput.value.toLowerCase();
+  
+    // Find matching data
+    for (let i = 0; i < data.length; i++) {
+      const studentFirstname = data[i].name.first.toLowerCase();
+      const studentLastname = data[i].name.last.toLowerCase();
+  
+      if (studentFirstname.includes(userInput) || studentLastname.includes(userInput)) {
+        matchingData.push(data[i])
+      }
+    }
+  
+    // Show results
+    if (matchingData.length > 0) {
+      showPage(matchingData, 1);
+      addPagination(matchingData);
+    } else {
+      studentsContainer.innerHTML = `<p>No results found...</p>`;
+      paginationContainer.innerHTML = "";
     }
   }
-
-  // Show results
-  if (matchingData.length > 0) {
-    showPage(matchingData, 1);
-    addPagination(matchingData);
-  } else {
-    html = `<p>No results found...</p>`;
-    studentsContainer.innerHTML = html;
-    paginationContainer.innerHTML = "";
-  }
 }
 
-// Call functions
+// Initialize the app
 showPage(data, 1);
 addPagination(data);
 addSearchBar();
